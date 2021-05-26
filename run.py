@@ -1,7 +1,7 @@
 import gspread
 from google.oauth2.service_account import Credentials
-
-SCOPE = [
+#IAM configuration. These are the APIs we need to access
+SCOPE = [ #This is constant in capitals
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive.file",
     "https://www.googleapis.com/auth/drive"
@@ -17,3 +17,4 @@ sales = SHEET.worksheet('sales')
 data = sales.get_all_values()
 
 print(data)
+# print(dir(SHEET))
