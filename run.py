@@ -35,8 +35,6 @@ def get_sales_data():
 
         if validate_data(sales_data):
             print("Data is valid!")
-            print(sales_data)
-            print(type(sales_data[0]))
             break
     return sales_data
 
@@ -97,9 +95,6 @@ def calculate_surplus_data(sales_row):
     stock = SHEET.worksheet("stock").get_all_values()
     stock_row = stock.pop(-1) #Could have used < stock[-1] >
     
-    print(f'Stock Row: {stock_row}')
-    print(f'Sales Row: {sales_row}')
-
     surplus_data = []
     for stock, sales in zip(stock_row,sales_row):
         surplus = int(stock) - sales
@@ -111,7 +106,7 @@ def get_last_5_entries_sales():
 
     sales = SHEET.worksheet('sales')
     column = sales.col_values(3) # Column and row references start at 1 NOT 0
-    print(column)
+    
 
     columns = []
     for ind in range(1,7):
@@ -119,20 +114,34 @@ def get_last_5_entries_sales():
         columns.append(column[-5:])
     return columns
 
+
+def calculate_stock_data(data):
+    '''
+    Calculate the average stock for each item type, adding 10%
+    '''
+    print("Calculating stock data...\n")
+    new_stock_data = []
+    for column in data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append(round(stock_num))
+
+    return new_stock_data
+
 def main():
     '''Run all program functions'''
 
     data = get_sales_data()
     sales_data= [int(num) for num in data]
-    print(sales_data)
-    print(type(sales_data[0]))
     update_worksheet(sales_data,"sales")
-    calculate_surplus_data(sales_data)
     new_surplus_data = calculate_surplus_data(sales_data)
     update_worksheet(new_surplus_data,"surplus")
-    print(new_surplus_data)
+    sales_columns = get_last_5_entries_sales()
+    stock_data = calculate_stock_data(sales_columns)
+    update_worksheet(stock_data,"stock")
+    
 
 print("Welcome to Love Sandwiches Data Automation")
-# main()
+main()
 
-sales_columns = get_last_5_entries_sales()
